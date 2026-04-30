@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Hospital Survey</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background: #f5f5f5; color: #202124; padding: 20px; }
+        .admin-container { max-width: 1200px; margin: 0 auto; }
+        header {
+            background: linear-gradient(135deg, #4a90e2 0%, #7ed321 100%);
+            color: white; padding: 24px 28px;
+            margin-bottom: 28px; border-radius: 8px;
+        }
+        header h1 { font-size: 28px; font-weight: 400; margin-bottom: 4px; }
+        header p { font-size: 14px; opacity: 0.9; }
+        .nav-links { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .nav-links a {
+            color: white; text-decoration: none;
+            padding: 7px 14px; border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 4px; font-size: 13px; transition: background 0.2s;
+        }
+        .nav-links a:hover { background: rgba(255,255,255,0.15); }
+        .nav-links .logout { margin-left: auto; background: rgba(255,255,255,0.1); }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px; margin-bottom: 24px;
+        }
+        .stat-card {
+            background: white; padding: 20px; border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.15);
+            border-left: 4px solid #4a90e2;
+        }
+        .stat-label { font-size: 12px; color: #5f6368; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; margin-bottom: 8px; }
+        .stat-value { font-size: 30px; font-weight: 300; color: #202124; }
+        .stat-sublabel { font-size: 12px; color: #9aa0a6; margin-top: 6px; }
+        .section-title { font-size: 18px; font-weight: 500; margin: 24px 0 14px; color: #202124; }
+        .table-container { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(60,64,67,0.15); overflow: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead { background: #f8f9fa; border-bottom: 2px solid #e8eaed; }
+        th { padding: 14px 16px; text-align: left; font-weight: 500; color: #5f6368; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
+        td { padding: 14px 16px; border-bottom: 1px solid #e8eaed; }
+        tbody tr:hover { background: #f8f9fa; }
+        .action-buttons { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .btn {
+            padding: 10px 20px; border: none; border-radius: 4px;
+            font-size: 13px; font-weight: 500; cursor: pointer;
+            text-decoration: none; display: inline-block;
+            transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .btn-primary { background: #4a90e2; color: white; }
+        .btn-primary:hover { background: #357abd; }
+        .btn-secondary { background: #f8f9fa; color: #202124; border: 1px solid #e8eaed; }
+        .btn-secondary:hover { background: #e8eaed; }
+        .rating-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .rating-5, .rating-4 { background: #d4edda; color: #1e8e3e; }
+        .rating-3 { background: #cce5ff; color: #1967d2; }
+        .rating-2 { background: #fff3cd; color: #c5a00b; }
+        .rating-1 { background: #f8d7da; color: #d33b27; }
+        .empty-state { text-align: center; padding: 40px; color: #5f6368; }
+        .error-box { background: #f8d7da; color: #d33b27; padding: 16px; border-radius: 4px; margin-bottom: 20px; }
+        #loadingState { text-align: center; padding: 40px; color: #5f6368; }
+        @media (max-width: 768px) {
+            body { padding: 0; }
+            .admin-container { padding: 12px; }
+            header { border-radius: 0; margin-bottom: 16px; padding: 20px 16px; }
+            header h1 { font-size: 22px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .stat-card { padding: 14px; }
+            .stat-value { font-size: 24px; }
+            th, td { padding: 10px 8px; font-size: 12px; }
+            .nav-links .logout { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <header>
+            <h1>Admin Dashboard</h1>
+            <p>Hospital Patient Satisfaction Survey</p>
+            <div class="nav-links">
+                <a href="admin.html">Dashboard</a>
+                <a href="index.html">Back to Survey</a>
+                <a href="#" class="logout" id="logoutBtn">🚪 Logout (<span id="usernameDisplay"></span>)</a>
+            </div>
+        </header>
+
+        <div id="errorBox" class="error-box" style="display:none;"></div>
+        <div id="loadingState">Loading dashboard...</div>
+        <div id="dashboardContent" style="display:none;">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Responses</div>
+                    <div class="stat-value" id="totalResponses">0</div>
+                    <div class="stat-sublabel">survey submissions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Answers</div>
+                    <div class="stat-value" id="totalAnswers">0</div>
+                    <div class="stat-sublabel">questions answered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average Rating</div>
+                    <div class="stat-value" id="avgRating" style="color:#1e8e3e;">0/5</div>
+                    <div class="stat-sublabel">overall satisfaction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Latest Response</div>
+                    <div class="stat-value" id="latestResponse" style="font-size:16px;">N/A</div>
+                    <div class="stat-sublabel">most recent submission</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="#" class="btn btn-primary" id="exportBtn">📥 Export to CSV</a>
+                <a href="admin.html" class="btn btn-secondary">🔄 Refresh</a>
+            </div>
+
+            <div class="section-title">Category Performance</div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Category</th><th>Average Rating</th><th>Response Count</th></tr></thead>
+                    <tbody id="categoryTable"></tbody>
+                </table>
+            </div>
+
+            <div class="section-title">Recent Responses</div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Name</th><th>Age</th><th>Sex</th>
+                            <th>Civil Status</th><th>Duration</th><th>Ward</th><th>Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody id="responsesTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('admin_token');
+        if (!token) window.location.href = 'login.html';
+
+        document.getElementById('usernameDisplay').textContent = localStorage.getItem('admin_username') || 'admin';
+
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_username');
+            window.location.href = 'login.html';
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('/api/admin?export=1', { headers: { 'Authorization': `Bearer ${token}` } })
+                .then(r => r.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `survey_responses_${new Date().toISOString().slice(0,10)}.csv`;
+                    a.click();
+                });
+        });
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/admin', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.status === 401) {
+                    localStorage.removeItem('admin_token');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+
+                const s = data.stats;
+                document.getElementById('totalResponses').textContent = s.total_responses;
+                document.getElementById('totalAnswers').textContent = s.total_answers;
+                document.getElementById('avgRating').textContent = s.average_rating + '/5';
+                document.getElementById('latestResponse').textContent = s.latest_response
+                    ? new Date(s.latest_response).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})
+                    : 'N/A';
+
+                const catBody = document.getElementById('categoryTable');
+                catBody.innerHTML = data.categories.length ? data.categories.map(c => `
+                    <tr>
+                        <td>${c.category}</td>
+                        <td><span class="rating-badge rating-${Math.round(c.average_rating)}">${c.average_rating} / 5</span></td>
+                        <td>${c.count}</td>
+                    </tr>`).join('') : '<tr><td colspan="3" class="empty-state">No data yet</td></tr>';
+
+                const resBody = document.getElementById('responsesTable');
+                resBody.innerHTML = data.responses.length ? data.responses.map(r => `
+                    <tr>
+                        <td>${r.id}</td>
+                        <td>${r.name}</td>
+                        <td>${r.age}</td>
+                        <td>${r.sex}</td>
+                        <td>${r.civil_status}</td>
+                        <td>${r.duration_of_hospitalization}</td>
+                        <td>${r.ward}</td>
+                        <td>${new Date(r.created_at).toLocaleString()}</td>
+                    </tr>`).join('') : '<tr><td colspan="8" class="empty-state">No responses yet</td></tr>';
+
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+
+            } catch(e) {
+                document.getElementById('loadingState').style.display = 'none';
+                const eb = document.getElementById('errorBox');
+                eb.textContent = 'Error: ' + e.message;
+                eb.style.display = 'block';
+            }
+        }
+
+        loadDashboard();
+    </script>
+</body>
+</html>

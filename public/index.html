@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4a90e2">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Survey">
+    <title>Nursing Care Satisfaction Survey</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+</head>
+<body>
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h1>Survey sa Kasiyahan ng Pasyente</h1>
+                <p>Mangyaring lagyan ng tsek (✔) ang bilang na tumutugma sa inyong sagot.</p>
+            </div>
+            <div class="form-content">
+                <div id="successMessage" class="success-message">
+                    ✓ Maraming salamat sa inyong sagot!
+                </div>
+                <form id="surveyForm">
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="step-indicator" id="stepIndicator">Hakbang 1 ng 5</div>
+
+                    <!-- Step 1: Personal Information -->
+                    <div class="form-step active" data-step="1">
+                        <div class="demographics-section">
+                            <div class="demographics-title">I. Personal na Impormasyon</div>
+                            <p class="helper-text">Pakisagutan ang lahat ng impormasyon sa ibaba.</p>
+                            <div class="demographics-grid">
+                                <div class="form-group">
+                                    <label for="name">Pangalan (Name) *</label>
+                                    <input type="text" id="name" name="name" required>
+                                    <span class="error-message">Kailangan ang pangalan</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">Edad (Age) *</label>
+                                    <input type="number" id="age" name="age" min="1" max="120" required>
+                                    <span class="error-message">Kailangan ang edad</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sex">Kasarian (Sex) *</label>
+                                    <select id="sex" name="sex" required>
+                                        <option value="">-- Pumili --</option>
+                                        <option value="Lalaki">Lalaki (Male)</option>
+                                        <option value="Babae">Babae (Female)</option>
+                                    </select>
+                                    <span class="error-message">Kailangan ang kasarian</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="civil_status">Katayuang Sibil (Civil Status) *</label>
+                                    <select id="civil_status" name="civil_status" required>
+                                        <option value="">-- Pumili --</option>
+                                        <option value="Single">Single</option>
+                                        <option value="Kasal">Kasal (Married)</option>
+                                        <option value="Biyudo/Biyuda">Biyudo/Biyuda (Widowed)</option>
+                                        <option value="Hiwalay">Hiwalay (Separated)</option>
+                                    </select>
+                                    <span class="error-message">Kailangan ang katayuang sibil</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="duration_of_hospitalization">Tagal ng Pananatili sa Ospital (Duration of Hospitalization) *</label>
+                                    <input type="text" id="duration_of_hospitalization" name="duration_of_hospitalization" placeholder="e.g. 3 araw" required>
+                                    <span class="error-message">Kailangan ang tagal ng pananatili</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ward">Ward (Silid) *</label>
+                                    <input type="text" id="ward" name="ward" required>
+                                    <span class="error-message">Kailangan ang ward</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rating-scale-legend">
+                            <strong>Iskala ng Pagtatasa:</strong>
+                            <span>5 – Lubos na Sumasang-ayon</span>
+                            <span>4 – Sumasang-ayon</span>
+                            <span>3 – Neutral</span>
+                            <span>2 – Hindi Sumasang-ayon</span>
+                            <span>1 – Lubos na Hindi Sumasang-ayon</span>
+                        </div>
+                        <div class="step-navigation">
+                            <button type="button" class="btn-prev" disabled>Balik</button>
+                            <button type="button" class="btn-next">Susunod</button>
+                        </div>
+                    </div>
+
+                    <!-- Survey Steps generated by JS -->
+                    <div id="surveySteps"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
