@@ -242,13 +242,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success) {
                 successMessage.classList.add('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                setTimeout(() => {
-                    successMessage.classList.remove('show');
-                    form.reset();
-                    currentStep = 1;
-                    showStep(currentStep);
-                    updateProgress();
-                }, 3000);
+                // Disable all inputs so answers are preserved for screenshotting
+                form.querySelectorAll('input, select, button').forEach(el => el.disabled = true);
+                submitBtn.textContent = '✓ Naisumite na';
             } else {
                 alert('May error: ' + (data.message || 'Unknown error'));
             }
