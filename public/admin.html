@@ -432,6 +432,7 @@
                     </div>`).join('')
                     : '<p style="color:#5f6368;">No ward data yet.</p>';
 
+                allResponses = data.responses || [];
                 filteredResponses = [...allResponses];
                 renderTable();
 
