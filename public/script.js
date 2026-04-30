@@ -242,15 +242,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success) {
                 successMessage.classList.add('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                // Disable all inputs so answers are preserved for screenshotting
                 form.querySelectorAll('input, select, button').forEach(el => el.disabled = true);
                 submitBtn.textContent = '✓ Naisumite na';
             } else {
                 alert('May error: ' + (data.message || 'Unknown error'));
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Isumite';
             }
         } catch {
             alert('May problema sa pagpadala. Subukan ulit.');
-        } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Isumite';
         }
