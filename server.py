@@ -208,18 +208,25 @@ class LocalHandler(SimpleHTTPRequestHandler):
                 for c, v in cat_map.items()
             ], key=lambda x: x["average_rating"], reverse=True)
 
+            WARDS = [
+                "Emergency Room", "Pedia Ward", "OB Ward", "Male Ward",
+                "Female Ward", "Isolation Ward (ISO)", "Private",
+                "Medicine Ward", "Outpatient Department (OPD)"
+            ]
             ward_data = supabase.table("responses").select("id, ward, survey_responses(category, rating)").execute()
-            ward_map = {}
+            ward_map = {w: {"total": [], "categories": {}, "count": 0} for w in WARDS}
             for r in ward_data.data:
                 ward = r["ward"]
-                ward_map.setdefault(ward, {"total": [], "categories": {}, "count": 0})
+                if ward not in ward_map:
+                    ward_map[ward] = {"total": [], "categories": {}, "count": 0}
                 ward_map[ward]["count"] += 1
                 for sr in r.get("survey_responses", []):
                     ward_map[ward]["total"].append(sr["rating"])
                     ward_map[ward]["categories"].setdefault(sr["category"], []).append(sr["rating"])
 
             ward_performance = []
-            for ward, wdata in sorted(ward_map.items()):
+            for ward in WARDS:
+                wdata = ward_map[ward]
                 cat_avgs = [
                     {"category": c, "average_rating": round(sum(v)/len(v), 2)}
                     for c, v in wdata["categories"].items()
@@ -231,7 +238,7 @@ class LocalHandler(SimpleHTTPRequestHandler):
                     "categories": sorted(cat_avgs, key=lambda x: x["category"])
                 })
 
-            recent = supabase.table("responses").select("*").order("created_at", desc=True).limit(100).execute()
+            recent = supabase.table("responses").select("*").order("created_at", desc=True).execute()
 
             self._json(200, {
                 "success": True,

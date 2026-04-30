@@ -61,34 +61,38 @@ class handler(BaseHTTPRequestHandler):
             categories.sort(key=lambda x: x["average_rating"], reverse=True)
 
             # Ward category performance
+            WARDS = [
+                "Emergency Room", "Pedia Ward", "OB Ward", "Male Ward",
+                "Female Ward", "Isolation Ward (ISO)", "Private",
+                "Medicine Ward", "Outpatient Department (OPD)"
+            ]
             ward_data = supabase.table("responses").select("id, ward, survey_responses(category, rating)").execute()
-            ward_map = {}
+            ward_map = {w: {"total": [], "categories": {}, "count": 0} for w in WARDS}
             for r in ward_data.data:
                 ward = r["ward"]
-                ward_map.setdefault(ward, {"total": [], "categories": {}})
+                if ward not in ward_map:
+                    ward_map[ward] = {"total": [], "categories": {}, "count": 0}
+                ward_map[ward]["count"] += 1
                 for sr in r.get("survey_responses", []):
                     ward_map[ward]["total"].append(sr["rating"])
                     ward_map[ward]["categories"].setdefault(sr["category"], []).append(sr["rating"])
 
             ward_performance = []
-            for ward, wdata in sorted(ward_map.items()):
+            for ward in WARDS:
+                wdata = ward_map[ward]
                 cat_avgs = [
                     {"category": c, "average_rating": round(sum(v)/len(v), 2)}
                     for c, v in wdata["categories"].items()
                 ]
                 ward_performance.append({
                     "ward": ward,
-                    "response_count": len(set()),
+                    "response_count": wdata["count"],
                     "overall_average": round(sum(wdata["total"])/len(wdata["total"]), 2) if wdata["total"] else 0,
                     "categories": sorted(cat_avgs, key=lambda x: x["category"])
                 })
 
-            # Count unique responses per ward
-            for wp in ward_performance:
-                wp["response_count"] = sum(1 for r in ward_data.data if r["ward"] == wp["ward"])
-
-            # Recent responses
-            recent = supabase.table("responses").select("*").order("created_at", desc=True).limit(100).execute()
+            # Recent responses - fetch all, no limit issues
+            recent = supabase.table("responses").select("*").order("created_at", desc=True).execute()
 
             self._respond(200, {
                 "success": True,
