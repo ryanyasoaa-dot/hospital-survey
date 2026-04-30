@@ -62,6 +62,30 @@
         .rating-2 { background: #fff3cd; color: #c5a00b; }
         .rating-1 { background: #f8d7da; color: #d33b27; }
         .empty-state { text-align: center; padding: 40px; color: #5f6368; }
+        .ward-card {
+            background: white; border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.15);
+            margin-bottom: 16px; overflow: hidden;
+        }
+        .ward-card-header {
+            background: #4a90e2; color: white;
+            padding: 12px 16px; display: flex;
+            justify-content: space-between; align-items: center;
+            cursor: pointer; user-select: none;
+        }
+        .ward-card-header h3 { font-size: 15px; font-weight: 500; }
+        .ward-card-header .ward-meta { font-size: 12px; opacity: 0.9; }
+        .ward-card-header .ward-overall {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 13px; font-weight: 600;
+        }
+        .ward-card-body { display: none; }
+        .ward-card-body.open { display: block; }
+        .ward-card-body table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .ward-card-body td { padding: 10px 16px; border-bottom: 1px solid #e8eaed; }
+        .ward-card-body tr:last-child td { border-bottom: none; }
+        .ward-card-body .overall-row { background: #f8f9fa; font-weight: 500; }
         .error-box { background: #f8d7da; color: #d33b27; padding: 16px; border-radius: 4px; margin-bottom: 20px; }
         #loadingState { text-align: center; padding: 40px; color: #5f6368; }
 
@@ -165,6 +189,9 @@
                     <tbody id="categoryTable"></tbody>
                 </table>
             </div>
+
+            <div class="section-title">Ward Category Performance</div>
+            <div id="wardPerformance"></div>
 
             <div class="section-title">Recent Responses</div>
 
@@ -378,7 +405,33 @@
                         </tr>`).join('')
                     : '<tr><td colspan="3" class="empty-state">No data yet</td></tr>';
 
-                allResponses = data.responses;
+                // Ward performance
+                const wardDiv = document.getElementById('wardPerformance');
+                wardDiv.innerHTML = data.ward_performance && data.ward_performance.length ? data.ward_performance.map((w, i) => `
+                    <div class="ward-card">
+                        <div class="ward-card-header" onclick="toggleWard(${i})">
+                            <div>
+                                <h3>🏥 ${w.ward}</h3>
+                                <div class="ward-meta">${w.response_count} response${w.response_count !== 1 ? 's' : ''}</div>
+                            </div>
+                            <div class="ward-overall">${w.overall_average} / 5</div>
+                        </div>
+                        <div class="ward-card-body" id="ward-body-${i}">
+                            <table>
+                                ${w.categories.map(c => `
+                                <tr>
+                                    <td>${c.category}</td>
+                                    <td><span class="rating-badge rating-${Math.round(c.average_rating)}">${c.average_rating} / 5</span></td>
+                                </tr>`).join('')}
+                                <tr class="overall-row">
+                                    <td>Overall Average</td>
+                                    <td><span class="rating-badge rating-${Math.round(w.overall_average)}">${w.overall_average} / 5</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>`).join('')
+                    : '<p style="color:#5f6368;">No ward data yet.</p>';
+
                 filteredResponses = [...allResponses];
                 renderTable();
 
@@ -391,6 +444,11 @@
                 eb.textContent = 'Error: ' + e.message;
                 eb.style.display = 'block';
             }
+        }
+
+        function toggleWard(i) {
+            const body = document.getElementById(`ward-body-${i}`);
+            body.classList.toggle('open');
         }
 
         async function deleteResponse(id) {

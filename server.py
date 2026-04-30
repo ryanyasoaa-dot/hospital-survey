@@ -208,6 +208,29 @@ class LocalHandler(SimpleHTTPRequestHandler):
                 for c, v in cat_map.items()
             ], key=lambda x: x["average_rating"], reverse=True)
 
+            ward_data = supabase.table("responses").select("id, ward, survey_responses(category, rating)").execute()
+            ward_map = {}
+            for r in ward_data.data:
+                ward = r["ward"]
+                ward_map.setdefault(ward, {"total": [], "categories": {}, "count": 0})
+                ward_map[ward]["count"] += 1
+                for sr in r.get("survey_responses", []):
+                    ward_map[ward]["total"].append(sr["rating"])
+                    ward_map[ward]["categories"].setdefault(sr["category"], []).append(sr["rating"])
+
+            ward_performance = []
+            for ward, wdata in sorted(ward_map.items()):
+                cat_avgs = [
+                    {"category": c, "average_rating": round(sum(v)/len(v), 2)}
+                    for c, v in wdata["categories"].items()
+                ]
+                ward_performance.append({
+                    "ward": ward,
+                    "response_count": wdata["count"],
+                    "overall_average": round(sum(wdata["total"])/len(wdata["total"]), 2) if wdata["total"] else 0,
+                    "categories": sorted(cat_avgs, key=lambda x: x["category"])
+                })
+
             recent = supabase.table("responses").select("*").order("created_at", desc=True).limit(100).execute()
 
             self._json(200, {
@@ -219,6 +242,7 @@ class LocalHandler(SimpleHTTPRequestHandler):
                     "latest_response": latest
                 },
                 "categories": categories,
+                "ward_performance": ward_performance,
                 "responses": recent.data
             })
 

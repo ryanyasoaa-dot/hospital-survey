@@ -60,6 +60,33 @@ class handler(BaseHTTPRequestHandler):
             ]
             categories.sort(key=lambda x: x["average_rating"], reverse=True)
 
+            # Ward category performance
+            ward_data = supabase.table("responses").select("id, ward, survey_responses(category, rating)").execute()
+            ward_map = {}
+            for r in ward_data.data:
+                ward = r["ward"]
+                ward_map.setdefault(ward, {"total": [], "categories": {}})
+                for sr in r.get("survey_responses", []):
+                    ward_map[ward]["total"].append(sr["rating"])
+                    ward_map[ward]["categories"].setdefault(sr["category"], []).append(sr["rating"])
+
+            ward_performance = []
+            for ward, wdata in sorted(ward_map.items()):
+                cat_avgs = [
+                    {"category": c, "average_rating": round(sum(v)/len(v), 2)}
+                    for c, v in wdata["categories"].items()
+                ]
+                ward_performance.append({
+                    "ward": ward,
+                    "response_count": len(set()),
+                    "overall_average": round(sum(wdata["total"])/len(wdata["total"]), 2) if wdata["total"] else 0,
+                    "categories": sorted(cat_avgs, key=lambda x: x["category"])
+                })
+
+            # Count unique responses per ward
+            for wp in ward_performance:
+                wp["response_count"] = sum(1 for r in ward_data.data if r["ward"] == wp["ward"])
+
             # Recent responses
             recent = supabase.table("responses").select("*").order("created_at", desc=True).limit(100).execute()
 
@@ -72,6 +99,7 @@ class handler(BaseHTTPRequestHandler):
                     "latest_response": latest
                 },
                 "categories": categories,
+                "ward_performance": ward_performance,
                 "responses": recent.data
             })
 
