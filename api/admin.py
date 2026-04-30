@@ -78,6 +78,26 @@ class handler(BaseHTTPRequestHandler):
         except Exception as e:
             self._respond(400, {"success": False, "message": str(e)})
 
+    def do_DELETE(self):
+        try:
+            token = self.headers.get("Authorization", "")
+            if token != f"Bearer {os.environ.get('ADMIN_SECRET')}":
+                self._respond(401, {"success": False, "message": "Unauthorized"})
+                return
+
+            from urllib.parse import urlparse, parse_qs
+            params = parse_qs(urlparse(self.path).query)
+            response_id = int(params.get("delete", [0])[0])
+            if not response_id:
+                raise ValueError("Missing response id")
+
+            supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+            supabase.table("responses").delete().eq("id", response_id).execute()
+            self._respond(200, {"success": True})
+
+        except Exception as e:
+            self._respond(400, {"success": False, "message": str(e)})
+
     def do_OPTIONS(self):
         self._respond(200, {})
 
@@ -85,7 +105,7 @@ class handler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())

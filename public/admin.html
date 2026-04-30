@@ -59,7 +59,8 @@
         .rating-3 { background: #cce5ff; color: #1967d2; }
         .rating-2 { background: #fff3cd; color: #c5a00b; }
         .rating-1 { background: #f8d7da; color: #d33b27; }
-        .empty-state { text-align: center; padding: 40px; color: #5f6368; }
+        .btn-danger { background: #f8d7da; color: #d33b27; border: 1px solid #f5c6cb; }
+        .btn-danger:hover { background: #d33b27; color: white; }
         .error-box { background: #f8d7da; color: #d33b27; padding: 16px; border-radius: 4px; margin-bottom: 20px; }
         #loadingState { text-align: center; padding: 40px; color: #5f6368; }
         @media (max-width: 768px) {
@@ -132,7 +133,7 @@
                     <thead>
                         <tr>
                             <th>ID</th><th>Name</th><th>Age</th><th>Sex</th>
-                            <th>Civil Status</th><th>Duration</th><th>Ward</th><th>Submitted</th>
+                            <th>Civil Status</th><th>Duration</th><th>Ward</th><th>Submitted</th><th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="responsesTable"></tbody>
@@ -198,7 +199,7 @@
 
                 const resBody = document.getElementById('responsesTable');
                 resBody.innerHTML = data.responses.length ? data.responses.map(r => `
-                    <tr>
+                    <tr id="row-${r.id}">
                         <td>${r.id}</td>
                         <td>${r.name}</td>
                         <td>${r.age}</td>
@@ -207,7 +208,8 @@
                         <td>${r.duration_of_hospitalization}</td>
                         <td>${r.ward}</td>
                         <td>${new Date(r.created_at).toLocaleString()}</td>
-                    </tr>`).join('') : '<tr><td colspan="8" class="empty-state">No responses yet</td></tr>';
+                        <td><button class="btn btn-danger" onclick="deleteResponse(${r.id})">🗑 Delete</button></td>
+                    </tr>`).join('') : '<tr><td colspan="9" class="empty-state">No responses yet</td></tr>';
 
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('dashboardContent').style.display = 'block';
@@ -221,6 +223,24 @@
         }
 
         loadDashboard();
+
+        async function deleteResponse(id) {
+            if (!confirm(`Delete response #${id}? This cannot be undone.`)) return;
+            try {
+                const res = await fetch(`/api/admin?delete=${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById(`row-${id}`)?.remove();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch {
+                alert('Delete failed. Try again.');
+            }
+        }
     </script>
 </body>
 </html>

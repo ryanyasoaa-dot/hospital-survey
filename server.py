@@ -65,6 +65,24 @@ class LocalHandler(SimpleHTTPRequestHandler):
         else:
             super().do_GET()
 
+    def do_DELETE(self):
+        parsed = urlparse(self.path)
+        params = parse_qs(parsed.query)
+        token = self.headers.get("Authorization", "")
+        if token != f"Bearer {ADMIN_SECRET}":
+            self._json(401, {"success": False, "message": "Unauthorized"})
+            return
+        try:
+            response_id = int(params.get("delete", [0])[0])
+            if not response_id:
+                raise ValueError("Missing response id")
+            supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+            supabase.table("responses").delete().eq("id", response_id).execute()
+            self._json(200, {"success": True})
+        except Exception as e:
+            print(f"  [delete error] {e}")
+            self._json(400, {"success": False, "message": str(e)})
+
     def do_POST(self):
         path = urlparse(self.path).path
         length = int(self.headers.get("Content-Length", 0))
