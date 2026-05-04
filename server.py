@@ -40,6 +40,40 @@ CATEGORIES = {
         "Nakatulong ang mga nars sa aking paggaling.",
         "Maganda ang naging karanasan ko sa pangangalaga ng mga nars.",
         "Irerekomenda ko ang ospital na ito dahil sa mahusay na serbisyo ng mga nars."
+    ],
+    "VI. Clarity of Statements": [
+        "The questions in the Digital Nursing Care Satisfaction Survey Form that I answered are clear and easy to understand.",
+        "The statements used in the survey form are not confusing.",
+        "The instructions are clear and easy to follow while answering the form.",
+        "Each question is well-constructed for accurate responses.",
+        "I easily understand the purpose of each question in the survey form."
+    ],
+    "VII. Ease of Use": [
+        "The Digital Nursing Care Satisfaction Survey Form is easy to use.",
+        "I was able to easily navigate from one question to the next.",
+        "The process of answering the digital survey form is convenient."
+    ],
+    "VIII. Completeness of Responses": [
+        "I was able to provide complete answers to each question.",
+        "The choices provided are sufficient for me to express my responses properly.",
+        "The survey form helped me express my overall experience."
+    ],
+    "IX. Efficiency": [
+        "I was able to save time in answering the digital survey form.",
+        "It is faster to answer compared to traditional paper-based surveys.",
+        "The process of answering the form is smooth and continuous.",
+        "The digital survey form helped me provide feedback quickly.",
+        "The digital survey form is effective in collecting my responses."
+    ],
+    "X. User Satisfaction": [
+        "I am satisfied with my experience using the Digital Nursing Care Satisfaction Survey Form.",
+        "I feel comfortable using the digital survey form.",
+        "I would use this type of survey form again if given the chance.",
+        "I would recommend the use of digital survey forms to other patients or respondents."
+    ],
+    "XI. Accuracy": [
+        "I did not notice any incorrect recording of my responses.",
+        "My answers were saved accurately and consistently."
     ]
 }
 
