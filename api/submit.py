@@ -32,38 +32,38 @@ CATEGORIES = {
         "Irerekomenda ko ang ospital na ito dahil sa mahusay na serbisyo ng mga nars."
     ],
     "VI. Clarity of Statements": [
-        "The questions in the Digital Nursing Care Satisfaction Survey Form that I answered are clear and easy to understand.",
-        "The statements used in the survey form are not confusing.",
-        "The instructions are clear and easy to follow while answering the form.",
-        "Each question is well-constructed for accurate responses.",
-        "I easily understand the purpose of each question in the survey form."
+        "Malinaw at madaling maunawaan ang mga tanong sa Digital Nursing Care Satisfaction Survey Form na aking sinagutan.",
+        "Hindi nakakalito ang mga pahayag na ginamit sa survey form.",
+        "Ang mga instruksyon ay malinaw at madaling sundin habang sinasagutan ang form.",
+        "Ang bawat tanong ay maayos ang pagkakabuo para sa tamang pagsagot.",
+        "Natintindihan ko agad ang layunin ng bawat tanong sa survey form."
     ],
     "VII. Ease of Use": [
-        "The Digital Nursing Care Satisfaction Survey Form is easy to use.",
-        "I was able to easily navigate from one question to the next.",
-        "The process of answering the digital survey form is convenient."
+        "Madaling gamitin ang Digital Nursing Care Satisfaction Survey Form.",
+        "Madali akong nakapag-navigate mula sa isang tanong patungo sa susunod.",
+        "Maginhawa ang proseso ng pagsagot sa digital survey form."
     ],
     "VIII. Completeness of Responses": [
-        "I was able to provide complete answers to each question.",
-        "The choices provided are sufficient for me to express my responses properly.",
-        "The survey form helped me express my overall experience."
+        "Nagawa kong makapagbigay ng kumpletong sagot sa bawat tanong.",
+        "Sapat ang mga pagpipilian upang maipahayag ko nang maayos ang aking sagot.",
+        "Ang survey form ay nakatulong upang maipahayag ko ang aking kabuuang karanasan."
     ],
     "IX. Efficiency": [
-        "I was able to save time in answering the digital survey form.",
-        "It is faster to answer compared to traditional paper-based surveys.",
-        "The process of answering the form is smooth and continuous.",
-        "The digital survey form helped me provide feedback quickly.",
-        "The digital survey form is effective in collecting my responses."
+        "Nakapagtipid ako ng oras sa pagsagot sa digital survey form.",
+        "Mas mabilis itong sagutan kumpara sa tradisyunal na papel na survey.",
+        "Maayos at tuloy-tuloy ang proseso ng pagsagot sa form.",
+        "Nakatulong ang digital survey form sa mabilis na pagbibigay ko ng feedback.",
+        "Epektibo ang digital survey form sa pangangalap ng aking mga sagot."
     ],
     "X. User Satisfaction": [
-        "I am satisfied with my experience using the Digital Nursing Care Satisfaction Survey Form.",
-        "I feel comfortable using the digital survey form.",
-        "I would use this type of survey form again if given the chance.",
-        "I would recommend the use of digital survey forms to other patients or respondents."
+        "Nasiyahan ako sa aking karanasan sa paggamit ng Digital Nursing Care Satisfaction Survey Form.",
+        "Komportable akong gumamit ng digital survey form.",
+        "Gagamitin ko muli ang ganitong uri ng survey form kung muling ipagagamit.",
+        "Irerekomenda ko ang paggamit ng digital survey forms sa ibang pasyente o respondents."
     ],
     "XI. Accuracy": [
-        "I did not notice any incorrect recording of my responses.",
-        "My answers were saved accurately and consistently."
+        "Wala akong napansing maling pag-record ng aking responses.",
+        "Tama at consistent ang pag-save ng aking mga sagot."
     ]
 }
 
