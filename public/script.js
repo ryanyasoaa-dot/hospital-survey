@@ -186,6 +186,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.addEventListener('click', function (e) {
+        if (e.target.closest('.btn-submit')) {
+            e.preventDefault();
+            handleSubmit(e);
+            return;
+        }
         if (e.target.classList.contains('btn-next')) nextStep();
         if (e.target.classList.contains('btn-prev')) prevStep();
     });
@@ -269,7 +274,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!confirm('Sigurado ka bang isusumite ang survey na ito?')) return;
 
-        const submitBtn = document.getElementById('submitBtn');
+        const submitBtn = document.getElementById('submitBtn') || document.querySelector('.btn-submit');
+        if (!submitBtn) {
+            alert('Hindi mahanap ang pindutang Isumite. Pakisubukang i-refresh ang pahina.');
+            return;
+        }
         submitBtn.disabled = true;
         submitBtn.textContent = 'Ipinapadala...';
 
